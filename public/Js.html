@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    button {
+      border: none;
+      background: transparent;
+      outline: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .wrap,
+    .left,
+    .right{
+      border: 2px solid #eee;
+    }
+
+    .wrap {
+      width: 800px;
+      height: 500px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .left {
+      width: 250px;
+      height: 450px;
+      margin-right: 50px;
+    }
+
+    .right {
+      width: 450px;
+      height: 450px;
+    }
+
+    ul {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    li {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 175px;
+      margin: 10px 0;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #eee;
+    }
+
+    li:hover {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .right-arrow {
+      position: absolute;
+      right: 0;
+      opacity: 0;
+      bottom:5px;
+    }
+
+    li:hover .right-arrow {
+      opacity: 1;
+    }
+
+    .right {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 30px;
+    }
+
+    .home-button {
+      position: fixed;
+      top: 50px;
+      right: -80px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100px;
+      height: 30px;
+      background-color: rgb(122,183,135);
+      border-radius: 20px;
+      color: white;
+      transition: all 0.5s;
+    }
+
+    .home-button>svg {
+      margin: 0 5px;
+    }
+
+    .home-button:hover {
+      cursor: pointer;
+      right: -20px;
+    }
+  </style>
+</head>
+<body>
+  <button class="home-button">
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 50 50">
+      <path d="M35,10 L15,25 L35,40" stroke="white" stroke-width="4" fill="none" />
+    </svg>
+    <span class="text">返回首页</span>
+  </button>
+  <div class="wrap">
+    <div class="left">
+      <ul id="personUl">
+      </ul>
+    </div>
+    <div class="right">Sam</div>
+  </div>
+
+  <script>
+    //#region 渲染
+    const Person = ['Sam', 'Monika', 'Jack', 'Rose'];
+    const personItems = Person.map( person => {
+      return `
+        <li>
+          ${person}
+          <div class="right-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 50" class="right-arrow">
+              <path d="M15,10 L35,25 L15,40" stroke="black" stroke-width="4" fill="none" />
+            </svg>
+          </div>
+        </li>
+      `
+    });
+    document.getElementById('personUl').innerHTML = personItems.join('');
+    //#endregion
+    
+    window.onload = function() {
+    var listItems = Array.from(document.querySelectorAll('.left li'));
+    var rightBox = document.querySelector('.right');
+    var currentIndex = 0;
+    var intervalId = null;
+
+    function startCarousel() {
+      intervalId = setInterval(function() {
+        rightBox.textContent = listItems[currentIndex].textContent;
+        currentIndex = (currentIndex + 1) % listItems.length;
+      }, 1000);
+    }
+
+    listItems.forEach(function(item) {
+      item.addEventListener('mouseover', function() {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+        rightBox.textContent = item.textContent;
+      });
+
+      item.addEventListener('mouseout', function() {
+        startCarousel();
+      });
+    });
+
+    startCarousel();
+  }
+
+    //#region btn
+    const btn = document.querySelector('.home-button');
+    btn.addEventListener('click', function() {
+      window.history.back();
+    });
+    //#endregion
+  </script>
+</body>
+</html>
